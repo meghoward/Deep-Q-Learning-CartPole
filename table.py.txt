@@ -1,0 +1,35 @@
+# Let's update the LaTeX table to be split across several pages using the `longtable` package.
+
+latex_table_long = r"""
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{geometry}
+\usepackage{longtable}
+\geometry{a4paper, margin=1in}
+\begin{document}
+
+\begin{longtable}{|m{5cm}|m{3cm}|m{7cm}|}
+\hline
+\textbf{Hyperparameter} & \textbf{Optimised Value} & \textbf{Justification} \\ \hline
+\endhead
+
+Architecture: Varying Layer Size & [4, 24, 24, 2] & The chosen architecture strikes a balance between complexity and training efficiency. While a more complex architecture (more layers/neurons) could model intricate patterns more effectively, it tends to overfit and requires longer training times. A layer depth of 24 was found to be optimal; it provided high returns similar to a larger size (48) but with reduced overfitting risks. A smaller layer size was observed to increase variance and lower the mean return, indicating less stable performance. Thus, the [4, 24, 24, 2] configuration was selected for its balance of performance and training efficiency. \\ \hline
+Size of Replay Buffer & 50000 & A larger replay buffer allows the network to learn from a broader range of experiences, enhancing its ability to optimize over time. A buffer size of 50,000 strikes a balance between learning stability and memory efficiency. Lower buffer sizes seem to potentially lead to overfitting on a smaller set of experiences seen more frequently, as observed from the initial peak and dip in performance around 5,000 to 10,000 buffer sizes. Although a 100,000 buffer size provided the highest returns, it was too memory-intensive. The chosen size of 50,000 offered improved learning stability and efficiency without this high memory demand. \\ \hline
+Batch Size for Learning & 256 & I varied this parameter between the ranges of the initially set 1, all the way up to 256. We can see with larger batch sizes updates are generally more stable. This is because larger batch sizes tend to average out the noise in the training data, leading to more stable and generalisable updates. While this also could potentially lead to a loss of fine-grained learning updates, this doesn’t appear to be the case at a size of 256 and thus this size represents a balanced compromise, providing sufficient stability in learning while still retaining a reasonable level of detail in the training data. \\ \hline
+Frequency of Target Update & Every 40 episodes & Updating the target network every 40 episodes was selected to balance stability with the ability to incorporate new information into the learning process. Too frequent updates (e.g., every episode) can lead to instability because the policy network's weights change too rapidly, making the learning process chaotic and preventing the model from converging on an optimal policy. On the other hand, very infrequent updates can cause the model to become stagnant and slow to adapt to new information. Additionally, less frequent updates can help mitigate the risk of overfitting. By updating the target network every 40 episodes, the model is forced to generalise across a broader set of experiences rather than quickly fitting to the most recent experiences. \\ \hline
+Learning rate & 0.1 & A learning rate of 0.1 can be seen to be optimal from the graph included. Rates in the 0.01-0.1 range initially improved returns, but 0.01 only converged model model performance at higher episode counts. Thus the moderate learning rate for 0.1 best facilitated stable convergence without being too slow or risking overshooting desirable minima. \\ \hline
+Epsilon & Decay Epsilon*0.99 each episode & A high starting epsilon with decay increases the rate of learning and the likelihood of successful outcomes. \\ \hline
+
+\caption{Optimisation of Hyperparameters}
+\end{longtable}
+
+\end{document}
+"""
+
+# Save the updated LaTeX table to a .tex file
+file_path_long_table = '/mnt/data/optimized_hyperparameters_long_table.tex'
+with open(file_path_long_table, 'w') as file:
+    file.write(latex_table_long)
+
+file_path_long_table
+le.py
